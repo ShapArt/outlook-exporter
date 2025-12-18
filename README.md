@@ -1,162 +1,52 @@
-﻿# 🗂️ Outlook Exporter
+# NAOS SLA Tracker
 
-[![CI](https://github.com/ShapArt/outlook-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/ShapArt/outlook-exporter/actions/workflows/ci.yml) [![license](https://img.shields.io/github/license/ShapArt/outlook-exporter)](https://github.com/ShapArt/outlook-exporter/blob/main/LICENSE)
+Desktop (PySide6) + CLI tool to ingest Outlook mail, track SLA in SQLite, and sync/export to Excel. Classic Outlook COM only; SAFE mode by default, SEND must be explicit. Developer: Tyoma (ShapArt).
 
+## Quick start
 
+1. Python 3.11+, Windows with Classic Outlook installed.
+2. `python -m venv .venv && .venv\Scripts\activate && pip install -r requirements.txt`
+3. Run CLI: `python cli.py --help`
+   - `python cli.py ingest --days 7`
+   - `python cli.py recalc-open`
+   - `python cli.py export-xlsx`
+   - `python cli.py process-responses`
+   - `python cli.py send-overdue` (preview if SAFE)
+   - `python cli.py sync-all` (full pipeline Excel->DB->Outlook ingest->recalc->export->notify preview)
+4. Run UI: `python cli.py ui` or launch `launch_ui.py`. Toggle SAFE/SEND in the settings panel; SEND asks for confirmation and still obeys allowlist/domains.
 
+## Safety & sending
 
+- `safe_mode=True` and `allow_send=False` by default.
+- Sending allowed only if `allow_send=True` **and** recipient in `send_allowlist` or allowed domains (`send_allow_domains`, default ru.naos.com/naos.com).
+- Overdue reminders respect quiet hours and reminder intervals.
+- Excel password can be overridden via `NAOS_EXCEL_PASSWORD` env var.
+- Logs avoid bodies; UI shows SEND badge (red when live).
 
+## Outlook/Excel notes
 
-<table>
+- Classic Outlook COM only; New Outlook is blocked with a clear error.
+- Restrict filters use US 12-hour format for reliability.
+- Sender SMTP resolved via ExchangeUser.PrimarySmtpAddress -> Address -> SenderEmailAddress fallback.
+- Text cleaning strips quotes/signatures before hashing/storing.
+- Excel sheets: Zayavki / Prosrochki / KPI / Konflikty / Statusy & hints. Editable columns: Status, Responsible, Comment, Priority.
 
+## Tests
 
-<tr>
+- Run all: `pytest`
+- Coverage suggestion: `pytest --cov=core --cov=ui` (pytest-cov can be added if needed).
+- QA driver: `python cli.py qa-full` (runs pytest + semi-E2E driver in safe/preview).
 
+## Release
 
-<td><b>✨ Что умеет</b><br/>Короткий список возможностей, ориентированных на ценность.</td>
+- Build PyInstaller: `build.bat` (creates `dist/naos_sla`).
+- For delivery: sign executables if possible to reduce SmartScreen friction.
 
+## Data locations
 
-<td><b>🧠 Технологии</b><br/>Стек, ключевые решения, нюансы безопасности.</td>
+- Default data dir: `%APPDATA%/NAOS_SLA_TRACKER` (db, logs, tickets.xlsx, config.json).
+- Config fields: sender filter (mode/value), mailbox/folder, safe_mode/allow_send, reminder/quiet hours, sla_by_priority, escalation_matrix, docs_url/sharepoint_url.
 
+## Credits
 
-<td><b>🖼️ Демо</b><br/>Скриншот/гиф или ссылка на Pages.</td>
-
-
-</tr>
-
-
-</table>
-
-
-
-
-
-> [!TIP]
-
-
-> Репозиторий оформлен по правилам: Conventional Commits, SemVer, CHANGELOG, SECURITY policy и CI.
-
-
-> Секреты — только через `.env`/секреты репозитория.
-
-
-
-
-
-
-
-
-<p align="left">
-
-
-  <img alt="build" src="https://img.shields.io/github/actions/workflow/status/ShapArt/outlook-exporter/ci.yml?label=CI&logo=githubactions">
-
-
-  <img alt="license" src="https://img.shields.io/github/license/ShapArt/outlook-exporter">
-
-
-  <img alt="last commit" src="https://img.shields.io/github/last-commit/ShapArt/outlook-exporter">
-
-
-  <img alt="issues" src="https://img.shields.io/github/issues/ShapArt/outlook-exporter">
-
-
-  <img alt="stars" src="https://img.shields.io/github/stars/ShapArt/outlook-exporter?style=social">
-
-
-</p>
-
-
-
-
-
-
-
-
-Скрипт для извлечения данных/вложений из Outlook (локальный сценарий).
-
-
-- Без публикации корпоративных данных
-
-
-- Настраиваемые фильтры папок/дат
-
-
-
-
-
-> Перед публикацией убедитесь, что в репозитории нет реальных адресов/ID/вложений.
-
-
-
-
-
-## Быстрый старт
-
-
-
-
-
-*Заполнить по мере развития проекта.*
-
-
-
-
-
-
-
-
-## Архитектура
-
-
-
-
-
-*Заполнить по мере развития проекта.*
-
-
-
-
-
-
-
-
-## Конфигурация
-
-
-
-
-
-*Заполнить по мере развития проекта.*
-
-
-
-
-
-
-
-
-## Тесты
-
-
-
-
-
-*Заполнить по мере развития проекта.*
-
-
-
-
-
-
-
-
-## Roadmap
-
-
-
-
-
-*Заполнить по мере развития проекта.*
-
-
+- Developer: Tyoma (ShapArt). Please keep SAFE unless you intentionally need SEND.

@@ -1,0 +1,7 @@
+pywin32
+pandas
+openpyxl
+PySide6
+python-dateutil
+pytest
+scikit-learn

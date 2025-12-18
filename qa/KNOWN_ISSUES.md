@@ -1,0 +1,5 @@
+- New Outlook (One Outlook) не поддерживает COM automation; нужен Classic Outlook. См. официальную доку Microsoft для add-ins/automation.
+- Object Model Guard/антивирус может блокировать отправку через win32com.Send; в safe_mode письма открываются через Display.
+- Если Excel открыт пользователем — файл защищен, экспорт сохраняет \*\_pending.xlsx, нужно закрыть исходник и переименовать.
+- WAL режим SQLite может быть недоступен на сетевых дисках; в этом случае падает в journal_mode=DELETE, логирует предупреждение.
+- Долгие/зависшие COM вызовы: иногда помогает перезапустить Outlook или починить pywin32/Office установку.

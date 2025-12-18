@@ -1,8 +1,11 @@
 # Changelog
-All notable changes to this project will be documented here.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## 1.0.0
 
-## [Unreleased]
-- init
+- Added modular architecture (config, db, outlook wrapper, SLA logic, Excel, notifications).
+- Introduced CLI (`cli.py`) with `ingest`, `recalc-open`, `export-xlsx`, `send-overdue`, `diagnose`, `test-all`, `ui`.
+- Implemented test mode: seeds overdue ticket and sends `[TEST][SLA]` email to allowlist.
+- Added Excel export with hidden `ticket_id` and `row_version`, atomic writes, and optimistic-lock sync path.
+- Added PySide6 UI with environment indicator, core actions, and log viewer.
+- Added logging with rotation to `%APPDATA%/NAOS_SLA_TRACKER/logs`.
+- Provided PyInstaller spec (`naos_sla.spec`) and build script (`build.bat`).
