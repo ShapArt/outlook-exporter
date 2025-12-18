@@ -3,27 +3,30 @@ import re
 import time
 from datetime import datetime, timedelta
 
+import pandas as pd
 import pythoncom
 import win32com.client
-import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 
 # ===================== НАСТРОЙКИ =====================
-DAYS_LOOKBACK =  35         # Сколько дней назад смотреть
+DAYS_LOOKBACK = 35  # Сколько дней назад смотреть
 EXCEL_FILENAME = "emails.xlsx"
-WRAP_COLS = ['B', 'E']        # в Excel: B=Текст, E=Ответ
+WRAP_COLS = ["B", "E"]  # в Excel: B=Текст, E=Ответ
 # =====================================================
+
 
 def dt_to_restrict_str(dt: datetime) -> str:
     # Outlook Restrict любит формат US 12-часовой: mm/dd/yyyy hh:mm AM/PM
     return dt.strftime("%m/%d/%Y %I:%M %p")
+
 
 def safe_get(obj, attr, default=None):
     try:
         return getattr(obj, attr)
     except Exception:
         return default
+
 
 def safe_call(fn, default=None, retries=2, delay=0.05):
     for attempt in range(retries + 1):
@@ -37,22 +40,30 @@ def safe_call(fn, default=None, retries=2, delay=0.05):
         except Exception:
             return default
 
+
 def clean_text(text: str) -> str:
     if not text:
         return ""
     # один перенос вместо пачки
-    text = re.sub(r'\n+', '\n', text)
+    text = re.sub(r"\n+", "\n", text)
     # триммим строки
-    lines = [ln.strip() for ln in text.split('\n')]
+    lines = [ln.strip() for ln in text.split("\n")]
     text = "\n".join(lines)
 
     # Маркеры подписи: отсекаем только если строка НАЧИНАЕТСЯ с маркера,
     # чтобы не резать нормальные «спасибо» в середине письма
     signature_markers = [
-        "с уважением", "с наилучшими пожеланиями", "с уважением,",
-        "с наилучшими", "best regards", "regards", "отправлено с",
-        "sent from my", "отправлено с моего", "отправлено с моего iphone",
-        "sent from my iphone"
+        "с уважением",
+        "с наилучшими пожеланиями",
+        "с уважением,",
+        "с наилучшими",
+        "best regards",
+        "regards",
+        "отправлено с",
+        "sent from my",
+        "отправлено с моего",
+        "отправлено с моего iphone",
+        "sent from my iphone",
     ]
     lower_lines = [ln.lower() for ln in lines]
     cut_at = None
@@ -68,10 +79,12 @@ def clean_text(text: str) -> str:
         text = "\n".join(lines[:cut_at]).strip()
     return text
 
+
 def normalize_subject(subject: str) -> str:
     if not subject:
         return ""
-    return re.sub(r'^((fw:|fwd:|re:)\s*)+', '', subject, flags=re.IGNORECASE).strip()
+    return re.sub(r"^((fw:|fwd:|re:)\s*)+", "", subject, flags=re.IGNORECASE).strip()
+
 
 def get_sender_smtp(mail) -> str:
     """Надёжно достаём SMTP отправителя."""
@@ -92,6 +105,7 @@ def get_sender_smtp(mail) -> str:
     addr = safe_get(mail, "SenderEmailAddress", "")
     return addr or ""
 
+
 def iter_folder_items_since(folder, date_field: str, since_dt: datetime):
     """Перебор элементов папки с Restrict/Sort и безопасным курсором."""
     items = folder.Items
@@ -105,6 +119,7 @@ def iter_folder_items_since(folder, date_field: str, since_dt: datetime):
     while item:
         yield item
         item = safe_call(lambda: restricted.GetNext())
+
 
 def build_sent_index(sent_folder, since_dt: datetime):
     """
@@ -152,6 +167,7 @@ def build_sent_index(sent_folder, since_dt: datetime):
         rec["forwards"].sort(key=lambda x: x[0])
     return idx
 
+
 def find_first_after(events, after_dt: datetime):
     """events — список (dt, payload) отсортированный по дате; вернуть первый >= after_dt."""
     if not events:
@@ -168,13 +184,14 @@ def find_first_after(events, after_dt: datetime):
         return events[lo]
     return None, None
 
+
 def main():
     pythoncom.CoInitialize()
 
     outlook = win32com.client.gencache.EnsureDispatch("Outlook.Application")
     ns = outlook.GetNamespace("MAPI")
     inbox = ns.GetDefaultFolder(6)  # Inbox
-    sent = ns.GetDefaultFolder(5)   # Sent Items
+    sent = ns.GetDefaultFolder(5)  # Sent Items
 
     since = datetime.now() - timedelta(days=DAYS_LOOKBACK)
 
@@ -204,7 +221,7 @@ def main():
 
             conv_id = safe_get(it, "ConversationID")
             norm_subj = normalize_subject(subject)
-            key = (conv_id or norm_subj.lower())
+            key = conv_id or norm_subj.lower()
 
             reply_date_str = ""
             reply_body = ""
@@ -214,7 +231,7 @@ def main():
             if rec:
                 # Ищем первый ответ/пересылку ПОСЛЕ получения
                 rdt, rbody = find_first_after(rec["replies"], received)
-                fdt, fto   = find_first_after(rec["forwards"], received)
+                fdt, fto = find_first_after(rec["forwards"], received)
                 # Приоритет: если есть и ответ и пересылка — оставим оба (как в твоей логике — статус пуст)
                 if rdt:
                     reply_date_str = rdt.strftime("%d.%m.%Y")
@@ -222,22 +239,28 @@ def main():
                 if fdt and fto:
                     forward_recipient = fto
 
-            status = "В работе" if (not reply_date_str and not forward_recipient) else ""
+            status = (
+                "В работе" if (not reply_date_str and not forward_recipient) else ""
+            )
 
-            rows.append({
-                "Дата": received.strftime("%d.%m.%Y"),
-                "Текст": body,
-                "Перенаправление": forward_recipient,
-                "Дата ответа": reply_date_str,
-                "Ответ": reply_body,
-                "Статус": status,
-                "Тема письма": subject,
-                "От кого": sender
-            })
+            rows.append(
+                {
+                    "Дата": received.strftime("%d.%m.%Y"),
+                    "Текст": body,
+                    "Перенаправление": forward_recipient,
+                    "Дата ответа": reply_date_str,
+                    "Ответ": reply_body,
+                    "Статус": status,
+                    "Тема письма": subject,
+                    "От кого": sender,
+                }
+            )
 
             processed += 1
             if processed % 50 == 0:
-                print(f"Входящих обработано: {processed} за {time.time() - started:.1f}s")
+                print(
+                    f"Входящих обработано: {processed} за {time.time() - started:.1f}s"
+                )
 
         except Exception as e:
             # Логгируем, но не падаем на «битых» письмах
@@ -250,7 +273,18 @@ def main():
         return
 
     # Порядок столбцов
-    df = df[["Дата", "Текст", "Перенаправление", "Дата ответа", "Ответ", "Статус", "Тема письма", "От кого"]]
+    df = df[
+        [
+            "Дата",
+            "Текст",
+            "Перенаправление",
+            "Дата ответа",
+            "Ответ",
+            "Статус",
+            "Тема письма",
+            "От кого",
+        ]
+    ]
     df.to_excel(EXCEL_FILENAME, index=False)
     print(f"Данные сохранены в {EXCEL_FILENAME}")
 
@@ -263,6 +297,7 @@ def main():
             cell.alignment = Alignment(wrap_text=True)
     wb.save(EXCEL_FILENAME)
     print("Форматирование Excel завершено.")
+
 
 if __name__ == "__main__":
     main()
