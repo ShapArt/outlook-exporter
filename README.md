@@ -1,52 +1,54 @@
-# NAOS SLA Tracker
+# outlook-exporter
 
-Desktop (PySide6) + CLI tool to ingest Outlook mail, track SLA in SQLite, and sync/export to Excel. Classic Outlook COM only; SAFE mode by default, SEND must be explicit. Developer: Tyoma (ShapArt).
+![License](https://img.shields.io/github/license/ShapArt/outlook-exporter)
+![Last Commit](https://img.shields.io/github/last-commit/ShapArt/outlook-exporter)
+![Language](https://img.shields.io/github/languages/top/ShapArt/outlook-exporter)
 
-## Quick start
+## EN Overview
+Outlook/Graph exporter for emails/attachments
 
-1. Python 3.11+, Windows with Classic Outlook installed.
-2. `python -m venv .venv && .venv\Scripts\activate && pip install -r requirements.txt`
-3. Run CLI: `python cli.py --help`
-   - `python cli.py ingest --days 7`
-   - `python cli.py recalc-open`
-   - `python cli.py export-xlsx`
-   - `python cli.py process-responses`
-   - `python cli.py send-overdue` (preview if SAFE)
-   - `python cli.py sync-all` (full pipeline Excel->DB->Outlook ingest->recalc->export->notify preview)
-4. Run UI: `python cli.py ui` or launch `launch_ui.py`. Toggle SAFE/SEND in the settings panel; SEND asks for confirmation and still obeys allowlist/domains.
+## RU Описание
+Outlook/Graph exporter for emails/attachments
 
-## Safety & sending
+## EN Features
+- Clear project purpose and maintainable structure.
+- Standardized community and contribution files.
+- Consistent documentation style across account repositories.
 
-- `safe_mode=True` and `allow_send=False` by default.
-- Sending allowed only if `allow_send=True` **and** recipient in `send_allowlist` or allowed domains (`send_allow_domains`, default ru.naos.com/naos.com).
-- Overdue reminders respect quiet hours and reminder intervals.
-- Excel password can be overridden via `NAOS_EXCEL_PASSWORD` env var.
-- Logs avoid bodies; UI shows SEND badge (red when live).
+## RU Возможности
+- Понятная цель проекта и поддерживаемая структура.
+- Стандартизированные файлы сообщества и вклада.
+- Единый стиль документации во всех репозиториях аккаунта.
 
-## Outlook/Excel notes
+## EN Quick Start
+pip install -r requirements.txt
+python -m main
 
-- Classic Outlook COM only; New Outlook is blocked with a clear error.
-- Restrict filters use US 12-hour format for reliability.
-- Sender SMTP resolved via ExchangeUser.PrimarySmtpAddress -> Address -> SenderEmailAddress fallback.
-- Text cleaning strips quotes/signatures before hashing/storing.
-- Excel sheets: Zayavki / Prosrochki / KPI / Konflikty / Statusy & hints. Editable columns: Status, Responsible, Comment, Priority.
+## RU Быстрый старт
+pip install -r requirements.txt
+python -m main
 
-## Tests
+## EN Project Structure
+- .github/ - templates, policy files, CI config.
+- Source files and assets are stored in repository root or feature directories.
 
-- Run all: `pytest`
-- Coverage suggestion: `pytest --cov=core --cov=ui` (pytest-cov can be added if needed).
-- QA driver: `python cli.py qa-full` (runs pytest + semi-E2E driver in safe/preview).
+## RU Структура проекта
+- .github/ - шаблоны, policy-файлы, конфиг CI.
+- Исходники и ресурсы находятся в корне или профильных директориях.
 
-## Release
+## EN Roadmap
+- Improve test coverage and automation.
+- Keep docs aligned with actual project behavior.
 
-- Build PyInstaller: `build.bat` (creates `dist/naos_sla`).
-- For delivery: sign executables if possible to reduce SmartScreen friction.
+## RU Планы
+- Расширять покрытие тестами и автоматизацией.
+- Поддерживать документацию в актуальном состоянии.
 
-## Data locations
+## EN Contributing
+See .github/CONTRIBUTING.md.
 
-- Default data dir: `%APPDATA%/NAOS_SLA_TRACKER` (db, logs, tickets.xlsx, config.json).
-- Config fields: sender filter (mode/value), mailbox/folder, safe_mode/allow_send, reminder/quiet hours, sla_by_priority, escalation_matrix, docs_url/sharepoint_url.
+## RU Вклад
+См. .github/CONTRIBUTING.md.
 
-## Credits
-
-- Developer: Tyoma (ShapArt). Please keep SAFE unless you intentionally need SEND.
+## License / Лицензия
+See LICENSE.
