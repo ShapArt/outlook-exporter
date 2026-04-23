@@ -7,33 +7,18 @@
 [![License](https://img.shields.io/github/license/ShapArt/=for-the-badge)](https://github.com/ShapArt/outlook-exporter/blob/main/LICENSE)
 
 ## RU
-**Слоган:** Почта под контролем
+Экспортер Outlook/Graph в философии Product Engineer: автоматизация, прозрачность и измеримый результат.
 
-Экспортер почты и вложений из Outlook/Graph для задач аналитики и автоматизации.
-
-### Что даёт проект
-- Быстрый запуск и понятный вход в задачу.
-- Практичный сценарий использования, а не «игрушечный» демо-кейс.
-- Поддерживаемая структура для роста и автоматизации.
-
-### Быстрый старт
-- Открой README/структуру проекта.
-- Запусти команды из текущего репозитория.
-- Используй шаблоны в .github/ для стандартизированного вклада.
-
-### Для кого
-- Инженеры, которым важен результат, а не шум.
-- Команды, ценящие скорость внедрения и качество кода.
+### Baseline
+- Product Engineer: backend и automation-системы, которые дают измеримый бизнес-результат.
+- Приоритет: ценность для клиента, скорость внедрения, надёжность эксплуатации.
 
 ## EN
-**Tagline:** Почта под контролем
+Outlook/Graph exporter in Product Engineer philosophy: automation, transparency, and measurable outcomes.
 
-Outlook/Graph exporter for email and attachment automation workflows.
-
-### Value proposition
-- Fast onboarding and clear project intent.
-- Production-minded structure for scaling and automation.
-- Consistent contribution and quality standards.
+### Baseline
+- Product Engineer building backend and automation systems with measurable product impact.
+- Priority: client value, delivery speed, and operational reliability.
 
 ## Contribution
 See .github/CONTRIBUTING.md.
