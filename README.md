@@ -2,10 +2,9 @@
 
 ![Social Preview](https://raw.githubusercontent.com/ShapArt/outlook-exporter/main/.github/social-preview.png)
 
-
-[![Stars](https://img.shields.io/github/stars/ShapArt/=for-the-badge)](https://github.com/ShapArt/outlook-exporter/stargazers)
-[![Last Commit](https://img.shields.io/github/last-commit/ShapArt/=for-the-badge)](https://github.com/ShapArt/outlook-exporter/commits/main)
-[![License](https://img.shields.io/github/license/ShapArt/=for-the-badge)](https://github.com/ShapArt/outlook-exporter/blob/main/LICENSE)
+[![Stars](https://img.shields.io/github/stars/ShapArt/outlook-exporter?style=for-the-badge)](https://github.com/ShapArt/outlook-exporter/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/ShapArt/outlook-exporter?style=for-the-badge)](https://github.com/ShapArt/outlook-exporter/commits/main)
+[![License](https://img.shields.io/github/license/ShapArt/outlook-exporter?style=for-the-badge)](https://github.com/ShapArt/outlook-exporter/blob/main/LICENSE)
 
 ## EN
 Outlook/Graph exporter for emails and attachments automation.
@@ -40,6 +39,10 @@ See .github/CONTRIBUTING.md and open a focused PR.
 
 ## License / Лицензия
 See LICENSE.
+
+
+
+
 
 
 
