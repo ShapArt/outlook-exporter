@@ -1,54 +1,46 @@
 # outlook-exporter
 
-![License](https://img.shields.io/github/license/ShapArt/outlook-exporter)
-![Last Commit](https://img.shields.io/github/last-commit/ShapArt/outlook-exporter)
-![Language](https://img.shields.io/github/languages/top/ShapArt/outlook-exporter)
+[![Stars](https://img.shields.io/github/stars/ShapArt/outlook-exporter?style=for-the-badge)](https://github.com/ShapArt/outlook-exporter/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/ShapArt/outlook-exporter?style=for-the-badge)](https://github.com/ShapArt/outlook-exporter/commits/main)
+[![License](https://img.shields.io/github/license/ShapArt/outlook-exporter?style=for-the-badge)](https://github.com/ShapArt/outlook-exporter/blob/main/LICENSE)
 
-## EN Overview
-Outlook/Graph exporter for emails/attachments
+## EN
+outlook-exporter — practical engineering project by ShapArt.
 
-## RU Описание
-Outlook/Graph exporter for emails/attachments
+This repository is part of a modern, portfolio-grade GitHub standard: strong structure, clear onboarding, and predictable contribution flow.
 
-## EN Features
-- Clear project purpose and maintainable structure.
-- Standardized community and contribution files.
-- Consistent documentation style across account repositories.
+## RU
+outlook-exporter — practical engineering project by ShapArt.
 
-## RU Возможности
-- Понятная цель проекта и поддерживаемая структура.
-- Стандартизированные файлы сообщества и вклада.
-- Единый стиль документации во всех репозиториях аккаунта.
+Этот репозиторий оформлен в современном portfolio-стиле: сильная структура, понятный старт и прозрачный процесс вклада.
 
-## EN Quick Start
-pip install -r requirements.txt
-python -m main
+## Highlights / Что важно
+- Fast onboarding with clear usage entry points.
+- Standardized `.github` health files and contribution rules.
+- Ready for scaling with CI, tests, and roadmap growth.
 
-## RU Быстрый старт
-pip install -r requirements.txt
-python -m main
+## Tech Stack / Технологии
+- Python
+- Automation, bots, and API tooling
+- Production-ready project layout
 
-## EN Project Structure
-- .github/ - templates, policy files, CI config.
-- Source files and assets are stored in repository root or feature directories.
+## Quick Start / Быстрый старт
+- Create virtual environment
+- Install dependencies
+- Run main module/script
 
-## RU Структура проекта
-- .github/ - шаблоны, policy-файлы, конфиг CI.
-- Исходники и ресурсы находятся в корне или профильных директориях.
+## Structure / Структура
+- `README.md` - overview and usage entry point.
+- `.github/` - policies, templates, workflow config.
+- Source directories - implementation and assets.
 
-## EN Roadmap
-- Improve test coverage and automation.
-- Keep docs aligned with actual project behavior.
+## Roadmap / Планы
+- Improve verification and automation coverage.
+- Expand examples and practical scenarios.
+- Keep docs synchronized with real behavior.
 
-## RU Планы
-- Расширять покрытие тестами и автоматизацией.
-- Поддерживать документацию в актуальном состоянии.
-
-## EN Contributing
-See .github/CONTRIBUTING.md.
-
-## RU Вклад
-См. .github/CONTRIBUTING.md.
+## Contributing / Вклад
+See `.github/CONTRIBUTING.md`.
 
 ## License / Лицензия
-See LICENSE.
+See `LICENSE`.
