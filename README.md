@@ -2,47 +2,42 @@
 
 ![Social Preview](https://raw.githubusercontent.com/ShapArt/outlook-exporter/main/.github/social-preview.png)
 
-[![Stars](https://img.shields.io/github/stars/ShapArt/outlook-exporter?style=for-the-badge)](https://github.com/ShapArt/outlook-exporter/stargazers)
-[![Last Commit](https://img.shields.io/github/last-commit/ShapArt/outlook-exporter?style=for-the-badge)](https://github.com/ShapArt/outlook-exporter/commits/main)
-[![License](https://img.shields.io/github/license/ShapArt/outlook-exporter?style=for-the-badge)](https://github.com/ShapArt/outlook-exporter/blob/main/LICENSE)
-
-## EN
-Outlook/Graph exporter for emails and attachments automation.
+[![Stars](https://img.shields.io/github/stars/ShapArt/=for-the-badge)](https://github.com/ShapArt/outlook-exporter/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/ShapArt/=for-the-badge)](https://github.com/ShapArt/outlook-exporter/commits/main)
+[![License](https://img.shields.io/github/license/ShapArt/=for-the-badge)](https://github.com/ShapArt/outlook-exporter/blob/main/LICENSE)
 
 ## RU
 Outlook/Graph exporter for emails and attachments automation.
 
-## Why this project matters / Зачем нужен проект
-- Built as a practical engineering project with clear delivery goals.
-- Prioritizes maintainability and explicit documentation.
-- Designed to evolve with CI/testing and production constraints.
+### Зачем этот проект
+- Практичный инженерный проект с упором на качество
+- Ориентирован на практическое использование, а не «учебный шаблон».
+- Поддерживает единый стандарт качества профиля и репозиториев.
 
-## Best for / Для кого
-- Backend developers and automation engineers.
-- Teams building bots, integrations, and internal tools.
+### Быстрый старт
+- Создай виртуальное окружение
+- Установи зависимости из requirements.txt
+- Запусти основной модуль по инструкции репозитория
 
-## Quick Run / Быстрый запуск
+### Для кого
+- Разработчики backend/automation решений.
+- Команды, которым нужна понятная архитектура и предсказуемый запуск.
+
+## EN
+Outlook/Graph exporter for emails and attachments automation.
+
+### Why this project
+- Практичный инженерный проект с упором на качество
+- Built for practical delivery, not just a demo.
+- Follows a consistent engineering quality standard.
+
+### Quick start
 - Create virtual environment
-- Install dependencies from `requirements.txt`
-- Run the main entrypoint from repository docs
+- Install requirements
+- Run main module from docs
 
-## Repository Compass / Навигация
-- README.md - product context and run flow.
-- .github/ - contribution standards, templates, CI policy.
-- Source directories - core implementation and assets.
+## Contribution
+See .github/CONTRIBUTING.md.
 
-## Topics / Темы
-$topics
-
-## Contribution / Вклад
-See .github/CONTRIBUTING.md and open a focused PR.
-
-## License / Лицензия
+## License
 See LICENSE.
-
-
-
-
-
-
-
