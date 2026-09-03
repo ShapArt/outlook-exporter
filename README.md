@@ -1,115 +1,165 @@
-# outlook-exporter
+# Outlook SLA Toolkit
 
-Windows-first Outlook export and spreadsheet processing workspace for turning mailbox-derived information into structured operational data.
+**Windows desktop tooling for turning Outlook requests into structured SLA state, Excel reports and reminders.**
 
-## Why this project exists
+I originally built this around a real support workflow where incoming requests lived in Outlook and their status was tracked manually. The project reads mail through Classic Outlook COM, normalises requests into SQLite, calculates SLA state, exports/synchronises Excel and can prepare or send deadline reminders under explicit safety settings.
 
-Outlook is often where operational reality lives: requests, follow-ups, reporting threads, approvals, and status changes. The hard part is not reading the mailbox manually — it is extracting that data into a format that can be reviewed, filtered, exported, and reused without repeating the same copy-paste work every time.
+## Flow
 
-This repository is positioned around that problem. It is a practical export-oriented workspace rather than a polished SaaS product or a generic mail client wrapper.
+```text
+Classic Outlook / MAPI
+        │
+        ▼
+message ingest + sender/customer extraction
+        │
+        ▼
+SQLite ticket state
+        │
+        ├──► SLA / status recalculation
+        │
+        ├──► Excel export ↔ reviewed Excel edits
+        │
+        └──► overdue plan → reminders
 
-## What the repository currently suggests
+        CLI + PySide6 desktop UI
+```
 
-Based on the repository purpose and dependency set, the project is built around a combination of:
+For the workflow it was built around, the automation removed roughly **an hour of repetitive work per day** across covered tasks and made overdue requests easier to see instead of leaving the state in mail threads and spreadsheets.
 
-- **Outlook access on Windows** via `pywin32`
-- **tabular transformation** via `pandas`
-- **Excel-compatible output** via `openpyxl`
-- **desktop UI / tooling** via `PySide6`
-- **date handling** via `python-dateutil`
-- **optional analysis-oriented experimentation** via `scikit-learn`
+## What is actually implemented
 
-That makes this repository interesting as a bridge between office automation, local desktop tooling, and structured data export.
+### Outlook ingest
 
-## Positioning
+[`core/outlook.py`](core/outlook.py) connects to **Classic Outlook** through `win32com` / MAPI. It can:
 
-This is best understood as an **applied internal-tooling style project**:
+- open the configured mailbox/folder;
+- filter messages by sender rules;
+- resolve SMTP addresses from Exchange/Outlook objects;
+- extract an external customer address from sender, forwarded headers or reply recipients;
+- detect whether Classic Outlook COM is available and report New Outlook when COM cannot be used.
 
-- not a reusable mail library first;
-- not a cloud product first;
-- but a local or operator-side utility for extracting useful data from Outlook-bound workflows.
+This is intentionally a Windows-first tool. New Outlook does not expose the same COM path, so the code fails with a clear diagnostic instead of pretending the integration is portable.
 
-## Likely problem shape
+### SLA state
 
-A repository like this is typically solving one or more of the following:
+[`core/sla.py`](core/sla.py) turns message history into ticket state. The model includes statuses such as:
 
-- collect Outlook items from a mailbox or folder;
-- normalize fields such as sender, subject, timestamps, and message metadata;
-- export records into analyst-friendly tabular formats;
-- support further inspection through spreadsheets or a local UI;
-- reduce repeated manual handling of routine mailbox data.
+`new · assigned · responded · resolved · waiting_customer · table · overdue`
 
-## Technical profile
+It also calculates business-hour SLA time, processes responses and builds an overdue reminder plan.
 
-### Detected stack
+### SQLite
 
-- Python
-- pywin32
-- pandas
-- openpyxl
-- PySide6
-- python-dateutil
-- pytest
-- scikit-learn
+[`core/db.py`](core/db.py) stores the operational state separately from Outlook. That makes the mailbox a source of events rather than the only place where the current status exists.
 
-### Why this combination matters
+### Excel round-trip
 
-This dependency mix points to a tool that sits between:
+[`core/excel.py`](core/excel.py) exports the current state to Excel and supports synchronising reviewed spreadsheet changes back into the local data model. Tests cover export behaviour, protection and Excel round-trip cases.
 
-- Windows-native Outlook access
-- local desktop interaction
-- structured export pipelines
-- downstream data analysis
+### Notifications
 
-That is a useful engineering niche because it combines systems knowledge, desktop constraints, and data ergonomics.
+[`core/notify.py`](core/notify.py) handles reminder messages. Sending is gated by configuration: the CLI exposes safe mode / allow-send controls and reports the resulting plan before sending overdue notifications.
 
-## How to get started
+### Desktop UI and CLI
 
-Install dependencies in a local virtual environment:
+The same core logic is available through:
 
-```bash
+- [`ui/app.py`](ui/app.py) — PySide6 desktop interface;
+- [`cli.py`](cli.py) — operational and diagnostic commands;
+- [`launch_ui.py`](launch_ui.py) — UI launcher.
+
+## Useful CLI commands
+
+The CLI includes commands for the main workflow rather than only one export script:
+
+```text
+ingest             read recent Outlook messages
+recalc             recalculate open ticket state
+export             write the Excel view
+process-responses  update state from mail replies
+send-overdue       build/send overdue reminders
+diagnose           check Outlook COM, paths and filters
+qa-full / test-all run automated and semi-E2E checks
+```
+
+Run `python cli.py --help` for the exact arguments available in the current version.
+
+## Run locally
+
+Requirements:
+
+- Windows;
+- **Classic Outlook** configured for the mailbox you want to read;
+- Python 3;
+- access rights to the mailbox/folder in Outlook.
+
+Install dependencies:
+
+```powershell
 python -m venv .venv
-. .venv/bin/activate
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-## Documentation note
+Copy [`config.example.json`](config.example.json) to your local configuration and adjust mailbox/folder, SLA and safety settings.
 
-The current repository can support a strong portfolio story, but only if the README stays honest.
+Start the desktop UI:
 
-At the moment, the safest accurate description is:
+```powershell
+python launch_ui.py
+```
 
-- this is a Windows-oriented Outlook export toolchain;
-- it is intended for turning mailbox data into structured outputs;
-- it likely includes both processing and local interaction layers;
-- it should not be oversold as a generalized enterprise mail platform.
+Or diagnose the environment first:
 
-## What would strengthen this repository further
+```powershell
+python cli.py diagnose
+```
 
-To make the portfolio value of this project even clearer later, the most useful additions would be:
+## Stack
 
-- a concrete entrypoint section
-- one sample input/output flow
-- one screenshot of the UI if present
-- one example of the exported spreadsheet structure
-- one short explanation of the exact operator scenario the tool was built for
+`Python` · `pywin32` · `SQLite` · `pandas` · `openpyxl` · `PySide6` · `pytest`
 
-## Where this repo fits in a portfolio
+The repository also contains packaging helpers for Windows/PyInstaller and QA scripts for semi-E2E checks.
 
-This repository is a good supporting project because it shows interest in:
+## Repository map
 
-- office automation
-- local tooling
-- data export workflows
-- practical Python engineering outside toy examples
+```text
+core/outlook.py   Outlook COM / MAPI integration
+core/sla.py       ticket states, SLA and response processing
+core/db.py        SQLite persistence
+core/excel.py     Excel export / sync
+core/notify.py    reminders
+ui/app.py         PySide6 desktop UI
+cli.py            operational CLI / diagnostics
+outlook_extract.py legacy / direct extraction path
+tests/            unit and workflow tests
+qa/               QA runbooks and drivers
+```
 
-## Constraints and trade-offs
+## Safety / operational constraints
 
-- Outlook-driven tooling is inherently environment-bound
-- Windows-specific integrations should be documented as such, not hidden
-- Exact runtime behavior depends on the local mailbox structure and available scripts/UI entrypoints inside the repo
-- The project is strongest when presented as a focused utility, not as a universal platform
+- Mail sending can be disabled independently from reading/processing.
+- `safe_mode` and allowlists exist for test/QA runs.
+- Outlook availability is diagnosed explicitly before COM-dependent work.
+- Sender filtering is configurable and diagnostics show when a filter removes the whole message window.
+- Excel is treated as an operator surface around structured state, not as the only database.
+
+## Tests
+
+The repository has tests for SLA calculations, business hours, sender filters, customer-email extraction, DB constraints, status mapping and Excel round-trip behaviour.
+
+```powershell
+python -m pytest
+```
+
+There is also a QA command that combines pytest with a semi-E2E driver and writes `QA_REPORT.md`.
+
+## По-русски
+
+Это Windows-инструмент для рабочего процесса вокруг Outlook: забрать обращения из почты, привести их к нормальным статусам, хранить состояние в SQLite, считать SLA, выгружать/синхронизировать Excel и напоминать о просрочках.
+
+Проект появился не как учебный “экспорт почты”, а из ежедневной рутины в NAOS. Самая полезная часть — связка `Outlook → структурированное состояние → SLA → Excel/напоминания`, которая убрала повторяющиеся ручные операции.
 
 ## License
 
-Add or reference the repository license as appropriate.
+See [LICENSE](LICENSE).
